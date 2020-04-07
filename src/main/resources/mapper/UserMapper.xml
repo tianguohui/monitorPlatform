@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ph.monitorPlatform.mapper.UserMapper">
+
+    <resultMap id="user" type="com.ph.monitorPlatform.entity.User">
+        <id property="userId" column="user_id"></id>
+        <result property="staffName" column="staff_name"></result>
+        <result property="departmentCode" column="department_code"></result>
+        <result property="jobTitle" column="job_title"></result>
+        <result property="phone" column="phone"></result>
+        <result property="mobilePhone" column="mobile_phone"></result>
+        <result property="email" column="email"></result>
+        <result property="note" column="note"></result>
+        <result property="encryptedPwd" column="encrypted_pwd"></result>
+        <result property="authMethod" column="auth_method"></result>
+        <result property="lastLoginTime" column="last_login_time"></result>
+        <result property="lastLoginIp" column="last_login_ip"></result>
+        <result property="loginTimes" column="login_times"></result>
+        <result property="creator" column="creator"></result>
+        <result property="createdate" column="createdate"></result>
+        <result property="updator" column="updator"></result>
+        <result property="updatedate" column="updatedate"></result>
+        <result property="lastDesktop" column="last_desktop"></result>
+        <result property="userType" column="user_type"></result>
+        <result property="flag" column="flag"></result>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    user_id, staff_name, department_code,job_title, phone, mobile_phone, email,note,encrypted_pwd, auth_method,
+    last_login_time,last_login_ip,login_times,creator,createdate,updator,updatedate,last_desktop,user_type,flag
+    </sql>
+
+    <select id="queryUserByUserId" parameterType="String" resultMap="user">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user where user_id =#{userId}
+    </select>
+
+    <update id="updateByUserId" parameterType="com.ph.monitorPlatform.entity.User">
+        UPDATE t_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="encryptedPwd!=null">encrypted_pwd = #{encryptedPwd},</if>
+            <if test="lastLoginTime!=null">last_login_time = #{lastLoginTime},</if>
+            <if test="lastLoginIp!=null">last_login_ip = #{lastLoginIp},</if>
+            <if test="loginTimes!=null">login_times = #{loginTimes},</if>
+        </trim>
+        WHERE user_id = #{userId}
+    </update>
+
+    <!--    <select id="queryUserByUserName" parameterType="String" resultMap="user">
+            select
+            <include refid="Base_Column_List"/>
+            from t_user where user_name =#{userName}
+        </select>-->
+</mapper>

@@ -1,0 +1,32 @@
+stages:
+ - build
+
+build_job:
+ stage: build
+ script:
+  - cd /home/zhongjiao/gitlab_project/
+  - echo "删除旧代码"
+  - rm -rf routing
+  #- echo "运行脚本，停止8089端口进程"
+  - cd /home/zhongjiao/gitlab_project/script/routing
+  - sh routing_pid_kill.sh
+  - cd /home/zhongjiao/gitlab_project/
+  - pwd
+  - echo "拉取最新代码"
+  - git clone http://10.1.8.174/tongyijiankong/routing.git
+  - cd /home/zhongjiao/gitlab_project/routing
+  - echo "下载编译"
+  - mvn compile
+  - echo "打包"
+  - mvn package -Dmaven.test.skip=true
+  - echo "打包成功"
+  - echo "运行jar包"
+  - cd /home/zhongjiao/gitlab_project/routing/target
+  - routing_jar=`ls /home/zhongjiao/gitlab_project/routing/target/|grep jar|grep -v original`
+  - source /etc/profile;setsid nohup java -jar ${routing_jar} --server.port=8089 >/dev/null 2>&1 &
+  - sleep 5s
+  - echo "部署成功"
+ only:
+  - master
+ tags:
+  - master
